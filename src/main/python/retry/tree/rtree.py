@@ -9,7 +9,8 @@ import math
 
 import matplotlib.pyplot as plt
 from retry.tree.internal import NodeDirectory
-from retry.tree.leaf import NodeLeaf, RegisterEntry
+from retry.tree.leaf import NodeLeaf
+from retry.tree.commons import RegisterEntry
 
 
 class RTree:

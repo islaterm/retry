@@ -5,11 +5,20 @@ Creative Commons Attribution 4.0 International License.
 You should have received a copy of the license along with this
 work. If not, see <https://creativecommons.org/licenses/by/4.0/>.
 """
-from retry.geometry import Rect
-from retry.tree.leaf import NodeLeaf, RegisterEntry
+from typing import List
+
+from retry.geometry import Point, Rect
+from retry.tree.commons import RegisterEntry
+from retry.tree.leaf import NodeLeaf
+
+
+def _mindist(obj: Rect, point: Point) -> float:
+    return obj.mindist(point)
 
 
 class NodeDirectory:
+    storage: List[RegisterEntry]
+
     def __init__(self, m, M):
         self.m = m
         self.M = M
@@ -46,19 +55,31 @@ class NodeDirectory:
 
         return L
 
-    def nearest_neighbor_depth(self, point, resultdist, numNodes):
+    def nearest_neighbor_depth(self, point, resultdist, num_nodes):
         result = None
 
         for elem in self.storage:
             if elem.object.mindist(point) <= resultdist:
-                (resultdist, result, numNodes) = elem.pointer.nearest_neighbor_depth(point,
-                                                                                     resultdist,
-                                                                                     numNodes)
+                (resultdist, result, num_nodes) = elem.pointer.nearest_neighbor_depth(point,
+                                                                                      resultdist,
+                                                                                      num_nodes)
 
-        return (resultdist, result, numNodes + 1)
+        return resultdist, result, num_nodes + 1
 
-    def nnRKV(self, point, resultdist, pruningdist, numNodes):
-        pass
+    def nn_rkv(self, point, resultdist, pruningdist, num_nodes):
+        result = None
+        objects: List[RegisterEntry] = []
+        elem: RegisterEntry
+        for elem in self.storage:
+            objects += elem.object
+            if elem.object.minmaxdist(point) <= resultdist:
+                result = elem.object
+        objects = sorted(objects, key=lambda obj: _mindist(obj, point))
+        for elem in objects:
+            if elem.object.mindist <= pruningdist:
+                resultsdist, result, num_nodes = elem.pointer.nn_rkv(point, resultdist, pruningdist,
+                                                                     num_nodes)
+        return resultdist, result, num_nodes + 1
 
     def insertPoint(self, point):
         minEnl = 100000000

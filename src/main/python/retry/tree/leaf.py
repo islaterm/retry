@@ -8,22 +8,12 @@ work. If not, see <https://creativecommons.org/licenses/by/4.0/>.
 from typing import Tuple
 
 from retry.geometry import Point, Rect
-
-
-class RegisterEntry:
-    """
-    Class to store an individual record of the R-Tree. It contains a geometric object (point or
-    rect) and a pointer to a Node
-    """
-
-    def __init__(self, geo_object, pointer):
-        self.object = geo_object
-        self.pointer = pointer
+from retry.tree.commons import Node, RegisterEntry
 
 
 # Class to store a leaf node
 # It stores the parameters of the structure and a collection of RegisterEntry
-class NodeLeaf:
+class NodeLeaf(Node):
     def __init__(self, m, M):
         self.m = m
         self.M = M
