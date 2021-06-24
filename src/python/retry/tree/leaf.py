@@ -5,7 +5,9 @@ Creative Commons Attribution 4.0 International License.
 You should have received a copy of the license along with this
 work. If not, see <https://creativecommons.org/licenses/by/4.0/>.
 """
-from retry.geometry import Rect
+from typing import Tuple
+
+from retry.geometry import Point, Rect
 
 
 class RegisterEntry:
@@ -68,7 +70,7 @@ class NodeLeaf:
 
         return resultList
 
-    def nearest_neighbor_depth(self, point, resultdist, numNodes):
+    def nearest_neighbor_depth(self, point, resultdist, num_nodes):
         result = None
 
         for elem in self.storage:
@@ -77,7 +79,7 @@ class NodeLeaf:
                 result = elem.object
                 resultdist = distance
 
-        return (resultdist, result, numNodes + 1)
+        return resultdist, result, num_nodes + 1
 
     # Performs a split and returns the information about the split
     def split(self, point):
@@ -166,3 +168,21 @@ class NodeLeaf:
                     R2.updateRect(selectedEntry.object)
 
         return group1, group2, R1, R2
+
+    def nn_rkv(self, point: Point, result_dist: float, pruning_dist: float, num_nodes: int) \
+            -> Tuple[float, float, int]:
+        """
+        Calculates the nearest neighbour of a point using the RKV algorithm ("Nearest Neighbor
+        Queries", Roussopouls et. al. 1995)
+        """
+        result = None
+
+        for elem in self.storage:
+            distance = point.distance_to(elem.object)
+            if distance <= result_dist:
+                result = elem.object
+                result_dist = distance
+                if result_dist < pruning_dist:
+                    pruning_dist = result_dist
+
+        return result_dist, result, num_nodes + 1
