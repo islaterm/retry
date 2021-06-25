@@ -17,6 +17,10 @@ class Node(metaclass=ABCMeta):
         """
         pass
 
+    @abstractmethod
+    def nearest_neighbor_depth(self, point, resultdist, num_nodes):
+        pass
+
 
 class RegisterEntry:
     """

@@ -8,7 +8,7 @@ work. If not, see <https://creativecommons.org/licenses/by/4.0/>.
 from typing import List
 
 from retry.geometry import Point, Rect
-from retry.tree.commons import RegisterEntry
+from retry.tree.commons import Node, RegisterEntry
 from retry.tree.leaf import NodeLeaf
 
 
@@ -16,7 +16,7 @@ def _mindist(entry: RegisterEntry, point: Point) -> float:
     return entry.object.mindist(point)
 
 
-class NodeDirectory:
+class NodeDirectory(Node):
     storage: List[RegisterEntry]
 
     def __init__(self, m, M):
@@ -72,13 +72,15 @@ class NodeDirectory:
         elem: RegisterEntry
         for elem in self.storage:
             objects.append(elem.object)
-            if elem.object.minmaxdist(point) <= resultdist:
-                result = elem.object
+            minmax_dist = elem.object.minmaxdist(point)
+            if minmax_dist <= pruningdist:
+                pruningdist = minmax_dist
         objects = sorted(self.storage, key=lambda entry: _mindist(entry, point))
         for elem in objects:
             if _mindist(elem, point) <= pruningdist:
                 resultdist, pruningdist, result, num_nodes = elem.pointer.nn_rkv(
                     point, resultdist, pruningdist, num_nodes)
+                pass
         return resultdist, pruningdist, result, num_nodes + 1
 
     def insertPoint(self, point):

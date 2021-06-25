@@ -9,19 +9,11 @@ from retry.geometry import Point
 from retry.tree.rtree import RTree
 
 if __name__ == '__main__':
+    import random
+
+    rng = random.Random()
+
     tree = RTree(2, 5)
-
-    tree.insert(Point(8, 10))
-    tree.insert(Point(4, 10))
-    tree.insert(Point(6, 4))
-    tree.insert(Point(1, 10))
-    tree.insert(Point(6, 5))
-    tree.insert(Point(5, 4))
-    tree.insert(Point(7, 8))
-    tree.insert(Point(3, 2))
-    tree.insert(Point(10, 7))
-    tree.insert(Point(2, 3))
-    tree.insert(Point(8, 5))
-    tree.insert(Point(4, 5))
-
-    tree.draw(10, 10)
+    for _ in range(0, 100):
+        tree.insert(Point(rng.random() * 100, rng.random() * 100))
+    tree.draw(100, 100)
