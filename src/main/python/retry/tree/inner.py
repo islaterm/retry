@@ -12,8 +12,8 @@ from retry.tree.commons import RegisterEntry
 from retry.tree.leaf import NodeLeaf
 
 
-def _mindist(obj: Rect, point: Point) -> float:
-    return obj.mindist(point)
+def _mindist(entry: RegisterEntry, point: Point) -> float:
+    return entry.object.mindist(point)
 
 
 class NodeDirectory:
@@ -71,15 +71,15 @@ class NodeDirectory:
         objects: List[RegisterEntry] = []
         elem: RegisterEntry
         for elem in self.storage:
-            objects += elem.object
+            objects.append(elem.object)
             if elem.object.minmaxdist(point) <= resultdist:
                 result = elem.object
-        objects = sorted(objects, key=lambda obj: _mindist(obj, point))
+        objects = sorted(self.storage, key=lambda entry: _mindist(entry, point))
         for elem in objects:
-            if elem.object.mindist <= pruningdist:
-                resultsdist, result, num_nodes = elem.pointer.nn_rkv(point, resultdist, pruningdist,
-                                                                     num_nodes)
-        return resultdist, result, num_nodes + 1
+            if _mindist(elem, point) <= pruningdist:
+                resultdist, pruningdist, result, num_nodes = elem.pointer.nn_rkv(
+                    point, resultdist, pruningdist, num_nodes)
+        return resultdist, pruningdist, result, num_nodes + 1
 
     def insertPoint(self, point):
         minEnl = 100000000

@@ -10,6 +10,8 @@ from typing import Tuple
 from retry.geometry import Point, Rect
 from retry.tree.commons import Node, RegisterEntry
 
+ResultDist: float
+
 
 # Class to store a leaf node
 # It stores the parameters of the structure and a collection of RegisterEntry
@@ -160,7 +162,7 @@ class NodeLeaf(Node):
         return group1, group2, R1, R2
 
     def nn_rkv(self, point: Point, result_dist: float, pruning_dist: float, num_nodes: int) \
-            -> Tuple[float, float, int]:
+            -> Tuple[float, float, float, int]:
         """
         Calculates the nearest neighbour of a point using the RKV algorithm ("Nearest Neighbor
         Queries", Roussopouls et. al. 1995)
@@ -175,4 +177,4 @@ class NodeLeaf(Node):
                 if result_dist < pruning_dist:
                     pruning_dist = result_dist
 
-        return result_dist, result, num_nodes + 1
+        return result_dist, pruning_dist, result, num_nodes + 1

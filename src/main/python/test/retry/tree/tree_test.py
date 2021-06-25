@@ -35,7 +35,9 @@ def test_nearest_neighbour(tree: RTree) -> None:
 
 
 def test_rkv(tree: RTree) -> None:
-    assert (2.23606797749979, Point(8, 5), 4) == tree.nnRKV(Point(9, 3))
+    result_dist, pruning_dist, nearest_point, num_nodes = tree.nnRKV(Point(9, 3))
+    assert result_dist == pruning_dist
+    assert (2.23606797749979, Point(8, 5)) == (result_dist, nearest_point)
 
 
 if __name__ == '__main__':

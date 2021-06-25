@@ -10,13 +10,7 @@ import math
 from matplotlib.patches import Circle, Rectangle
 
 
-class GeoObject:
-    """
-    Base class for geometric objects.
-    """
-
-
-class Point(GeoObject):
+class Point:
     """
     Class to store a 2D point
     """
@@ -51,7 +45,7 @@ class Point(GeoObject):
 
 
 # Class to store a rectangle
-class Rect(GeoObject):
+class Rect:
     # The rectangle is always represented by the top-left and bottom-right points.
     # The constructor receives any two points and computes the top-left and bottom-right points.
 
